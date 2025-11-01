@@ -16,7 +16,20 @@ export default function Header({ onCartClick, onDashboardClick, currentView }: H
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <h1 className="text-2xl font-bold text-gray-900">FASHION STORE</h1>
+            <img 
+              src="/logo.png" 
+              alt="FASHION STORE" 
+              className="h-10"
+              onError={(e) => {
+                // Fallback to text if logo image is not available
+                e.currentTarget.style.display = 'none';
+                const textElement = e.currentTarget.nextElementSibling;
+                if (textElement) {
+                  (textElement as HTMLElement).style.display = 'block';
+                }
+              }}
+            />
+            <h1 className="text-2xl font-bold text-gray-900" style={{ display: 'none' }}>FASHION STORE</h1>
           </div>
 
           <nav className="flex items-center space-x-6">
