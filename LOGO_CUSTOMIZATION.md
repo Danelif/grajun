@@ -6,9 +6,9 @@ This guide explains how to customize the logo for your Fashion Store application
 
 1. **Prepare your logo image:**
    - File name: `logo.png`
-   - Recommended dimensions: 120-150px width × 40-50px height
+   - Recommended dimensions: 192-240px width × 64-80px height
    - Format: PNG (transparent background recommended for best results)
-   - The logo will be displayed at a fixed height of 40px in the header
+   - The logo will be displayed at a fixed height of 64px in the header
 
 2. **Place the logo file:**
    - Copy your `logo.png` file to the `public/` directory in the project root
@@ -41,6 +41,6 @@ The logo appears in the top-left corner of the header:
 - Check browser console for any image loading errors
 
 **Logo size issues?**
-- The logo height is fixed at 40px (10 Tailwind units)
+- The logo height is fixed at 64px (16 Tailwind units)
 - Width scales proportionally
 - For best results, use a logo with aspect ratio suitable for header display
