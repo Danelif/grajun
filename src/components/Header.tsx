@@ -22,7 +22,7 @@ export default function Header({ onCartClick, onDashboardClick, currentView }: H
               <img 
                 src="/logo.png" 
                 alt="FASHION STORE" 
-                className="h-10 w-auto"
+                className="h-16 w-auto"
                 onError={() => setLogoError(true)}
               />
             ) : (
