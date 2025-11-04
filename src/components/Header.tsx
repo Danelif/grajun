@@ -1,4 +1,5 @@
-import { ShoppingCart, LayoutDashboard, LogIn, LogOut, User } from 'lucide-react';
+import { useState } from 'react';
+import { ShoppingCart, LayoutDashboard, LogIn, LogOut, User, AlertCircle } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -13,24 +14,30 @@ export default function Header({ onCartClick, onDashboardClick, onLoginClick, cu
   const { getTotalItems } = useCart();
   const { user, profile, signOut, isAdmin } = useAuth();
   const totalItems = getTotalItems();
+  const [signOutError, setSignOutError] = useState<string | null>(null);
 
   const handleSignOut = async () => {
     try {
+      setSignOutError(null);
       await signOut();
     } catch (error) {
       console.error('Error signing out:', error);
+      setSignOutError('Erreur lors de la déconnexion');
+      // Clear error after 3 seconds
+      setTimeout(() => setSignOutError(null), 3000);
     }
   };
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <div className="flex items-center">
-            <h1 className="text-2xl font-bold text-gray-900">FASHION STORE</h1>
-          </div>
+    <>
+      <header className="bg-white shadow-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <h1 className="text-2xl font-bold text-gray-900">FASHION STORE</h1>
+            </div>
 
-          <nav className="flex items-center space-x-6">
+            <nav className="flex items-center space-x-6">
             {currentView !== 'dashboard' && (
               <>
                 {user && isAdmin() && (
@@ -86,6 +93,17 @@ export default function Header({ onCartClick, onDashboardClick, onLoginClick, cu
           </nav>
         </div>
       </div>
+      {signOutError && (
+        <div className="bg-red-50 border-b border-red-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+            <div className="flex items-center space-x-2 text-red-600 text-sm">
+              <AlertCircle size={16} />
+              <span>{signOutError}</span>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
+    </>
   );
 }

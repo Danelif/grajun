@@ -23,7 +23,7 @@ interface Stats {
 }
 
 export default function Dashboard({ onBackToShop }: DashboardProps) {
-  const { isAdmin, loading: authLoading } = useAuth();
+  const { isAdmin, profile, loading: authLoading } = useAuth();
   const [stats, setStats] = useState<Stats>({
     totalRevenue: 0,
     totalOrders: 0,
@@ -35,11 +35,11 @@ export default function Dashboard({ onBackToShop }: DashboardProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!authLoading && isAdmin()) {
+    if (!authLoading && profile?.role === 'admin') {
       fetchStats();
       fetchRecentOrders();
     }
-  }, [authLoading, isAdmin]);
+  }, [authLoading, profile]);
 
   // If not admin, show access denied
   if (authLoading) {

@@ -21,8 +21,18 @@ export default function Login({ onClose }: LoginProps) {
     try {
       await signIn(email, password);
       onClose();
-    } catch (err) {
-      setError('Invalid email or password');
+    } catch (err: unknown) {
+      // Handle different Supabase auth errors
+      const error = err as { message?: string };
+      if (error.message?.includes('Invalid login credentials')) {
+        setError('Email ou mot de passe incorrect');
+      } else if (error.message?.includes('Email not confirmed')) {
+        setError('Veuillez confirmer votre email avant de vous connecter');
+      } else if (error.message?.includes('User not found')) {
+        setError('Aucun compte trouvé avec cet email');
+      } else {
+        setError('Une erreur est survenue lors de la connexion');
+      }
       console.error('Login error:', err);
     } finally {
       setLoading(false);
