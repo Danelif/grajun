@@ -33,12 +33,12 @@ export default function Header({ onCartClick, onDashboardClick, onLoginClick, cu
     <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center">
+          <div className="flex items-center h-full">
             {!logoError ? (
               <img 
                 src="/logo.png" 
                 alt="FASHION STORE" 
-                className="h-16 w-auto"
+                className="h-full w-auto object-contain"
                 onError={() => setLogoError(true)}
               />
             ) : (
