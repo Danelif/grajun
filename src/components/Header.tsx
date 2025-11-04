@@ -15,6 +15,7 @@ export default function Header({ onCartClick, onDashboardClick, onLoginClick, cu
   const { user, profile, signOut, isAdmin } = useAuth();
   const totalItems = getTotalItems();
   const [signOutError, setSignOutError] = useState<string | null>(null);
+  const [logoError, setLogoError] = useState(false);
 
   const handleSignOut = async () => {
     try {
@@ -42,7 +43,8 @@ export default function Header({ onCartClick, onDashboardClick, onLoginClick, cu
               />
             ) : (
               <h1 className="text-2xl font-bold text-gray-900">FASHION STORE</h1>
-            </div>
+            )}
+          </div>
 
             <nav className="flex items-center space-x-6">
             {currentView !== 'dashboard' && (
@@ -111,6 +113,5 @@ export default function Header({ onCartClick, onDashboardClick, onLoginClick, cu
         </div>
       )}
     </header>
-    </>
   );
 }
