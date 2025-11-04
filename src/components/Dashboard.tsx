@@ -5,11 +5,9 @@ import {
   Users,
   ShoppingBag,
   ArrowLeft,
-  Plus,
-  Edit,
-  Trash2
 } from 'lucide-react';
-import { supabase, Product, Order, Customer } from '../lib/supabase';
+import { supabase, Order } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
 import ProductManagement from './ProductManagement';
 import OrderManagement from './OrderManagement';
 
@@ -25,6 +23,7 @@ interface Stats {
 }
 
 export default function Dashboard({ onBackToShop }: DashboardProps) {
+  const { isAdmin, profile, loading: authLoading } = useAuth();
   const [stats, setStats] = useState<Stats>({
     totalRevenue: 0,
     totalOrders: 0,
@@ -36,9 +35,44 @@ export default function Dashboard({ onBackToShop }: DashboardProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchStats();
-    fetchRecentOrders();
-  }, []);
+    if (!authLoading && profile?.role === 'admin') {
+      fetchStats();
+      fetchRecentOrders();
+    }
+  }, [authLoading, profile]);
+
+  // If not admin, show access denied
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-gray-600">Chargement...</div>
+      </div>
+    );
+  }
+
+  if (!isAdmin()) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md text-center">
+          <div className="text-red-600 mb-4">
+            <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Accès refusé</h2>
+          <p className="text-gray-600 mb-6">
+            Vous n'avez pas les permissions nécessaires pour accéder au dashboard.
+          </p>
+          <button
+            onClick={onBackToShop}
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Retour à la boutique
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const fetchStats = async () => {
     setLoading(true);
@@ -140,9 +174,15 @@ export default function Dashboard({ onBackToShop }: DashboardProps) {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {activeTab === 'overview' && (
-          <div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="text-gray-600">Chargement des données...</div>
+          </div>
+        ) : (
+          <>
+            {activeTab === 'overview' && (
+              <div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <div className="bg-white rounded-lg shadow p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -252,10 +292,12 @@ export default function Dashboard({ onBackToShop }: DashboardProps) {
               </div>
             </div>
           </div>
-        )}
+            )}
 
-        {activeTab === 'products' && <ProductManagement />}
-        {activeTab === 'orders' && <OrderManagement />}
+            {activeTab === 'products' && <ProductManagement />}
+            {activeTab === 'orders' && <OrderManagement />}
+          </>
+        )}
       </div>
     </div>
   );
